@@ -42,69 +42,70 @@ module List :
 
     (** {5 Extended functionality} *)
 
-    (** [range n] creates a list with values from 0 to [n-1]. *)  
+    (** [range n] creates a list with values from 0 to [n-1]. *)
     val range : int -> int list
-    
+
     (** [wrap x] returns a list that contains [x]. *)
     val wrap : 'a -> 'a list
 
     (** [cons x l] appends the value [x] to the list [l]. [x] is the
-        head of the result list. *) 
+        head of the result list. *)
     val cons : 'a -> 'a list -> 'a list
-    
+
     (** [remove_fast x l] removes the value [x] from the list [l]. *)
     val remove_fast : 'a -> 'a list -> 'a list
-    
+
     (** [sum l] return the sum of the elements of the int list [l]. *)
     val sum : int list -> int
-    
+
     (** [sum l] returns the sum of the elements of the float list [l]. *)
     val sumf : float list -> float
 
     (** [sum_map f l] applies the function [f] on each element of the
-        int list [l] and then returns the sum of the results. *) 
+        int list [l] and then returns the sum of the results. *)
     val sum_map : ('a -> int) -> 'a list -> int
 
     (** [sumf_map f l] applies the function [f] on each element of the
-        float list [l] and then returns the sum of the results. *) 
+        float list [l] and then returns the sum of the results. *)
     val sumf_map : ('a -> float) -> 'a list -> float
+    val sumc_map : ('a -> Complex.t) -> 'a list -> Complex.t
 
     (** [count f l] applies boolean the function [f] on each element
         of the list [l], and returns the number of times that [f] returns
         [true]. *)
     val count : ('a -> bool) -> 'a list -> int
-    
+
     (** [rev_iter f l] is the same as [iter f l], but iterates from
         right to left. *)
     val rev_iter : ('a -> unit) -> 'a list -> unit
-    
+
     (** [iter2 f \[a1; ...; an\] \[b1; ...; bn\] \[c1; ...; c_n\]]
-        calls in turn [f a1 b1 c1; ...; f an bn cn\] ]. *) 
+        calls in turn [f a1 b1 c1; ...; f an bn cn\] ]. *)
     val iter3 :
       ('a -> 'b -> 'c -> 'd) -> 'a list -> 'b list -> 'c list -> unit
-    
+
     (** [map f \[a1; ...; an\] \[b1; ...; bn\] \[c1; ...; c_n\]]
         returns the list [f a1 b1 c1; ...; f an bn cn]. Not
-        tail-recursive. *) 
+        tail-recursive. *)
     val map3 :
       ('a -> 'b -> 'c -> 'd) -> 'a list -> 'b list -> 'c list -> 'd list
-    
-    (** Transform a list of triples into a triple of lists: 
-        [split3 \[(a1,b1,c1); ...; (an,bn,cn)\]] is 
+
+    (** Transform a list of triples into a triple of lists:
+        [split3 \[(a1,b1,c1); ...; (an,bn,cn)\]] is
         [(\[a1; ...; an\], \[b1; ...; bn\])]. Not tail-recursive. *)
     val split3 : ('a * 'b * 'c) list -> 'a list * 'b list * 'c list
-    
+
     (** [transpose m] transposes the matrix [m] represented as a list
-        of lists. *) 
+        of lists. *)
     val transpose : 'a list list -> 'a list list
 
-    (** [rem_first l] returns the tail of the list [l]. *) 
+    (** [rem_first l] returns the tail of the list [l]. *)
     val rem_first : 'a list -> 'a list
 
     (** [rem_item l i] returns a list that has the same order as the
         list [l], which does not include the value [i]. Not
-        tail-recursive.  *)   
-    val rem_item: 'a list -> 'a -> 'a list 
+        tail-recursive.  *)
+    val rem_item: 'a list -> 'a -> 'a list
 
     (** {5 Functions from the original List module} *)
 
@@ -117,7 +118,7 @@ module List :
     val rev_append : 'a list -> 'a list -> 'a list
     val concat : 'a list list -> 'a list
     val flatten : 'a list list -> 'a list
-    
+
     val iter : ('a -> unit) -> 'a list -> unit
     val iteri : (int -> 'a -> unit) -> 'a list -> unit
     val map : ('a -> 'b) -> 'a list -> 'b list
@@ -155,7 +156,7 @@ module List :
     val fold_left2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b list -> 'c list -> 'a
   end
 
-  
+
 (** Standard Ocaml Array module with extended functionality. *)
 module Array :
   sig
@@ -163,52 +164,52 @@ module Array :
 
     (** [sum a] returns the sum of the elements of the int array [a]. *)
     val sum : int array -> int
-    
+
     (** [sum a] returns the sum of the elements of the float array [a]. *)
     val sumf : float array -> float
-    
+
     (** [sum_map f a] applies the function [f] on each element of the
-        int array [a] and then returns the sum of the results. *) 
+        int array [a] and then returns the sum of the results. *)
     val sum_map : ('a -> int) -> 'a array -> int
- 
+
     (** [sum_map f a] applies the function [f] on each element of the
-        float array [a] and then returns the sum of the results. *) 
+        float array [a] and then returns the sum of the results. *)
     val sumf_map : ('a -> float) -> 'a array -> float
 
-    (** [find p a] returns the first element of the array [a] 
+    (** [find p a] returns the first element of the array [a]
         that satisfies the predicate [p].
         @raise Not_found if there is no value that satisfies [p] in the
         list [l]. *)
     val find : ('a -> bool) -> 'a array -> 'a
-    
-    (** [map2 f \[|a1; ...; an|\] \[|b1; ...; bn|\]] is 
+
+    (** [map2 f \[|a1; ...; an|\] \[|b1; ...; bn|\]] is
         [\[|f a1 b1; ...; f an bn|\]]. *)
     val map2 : ('a -> 'b -> 'c) -> 'a array -> 'b array -> 'c array
-    
-    (** [iter2 f \[|a1; ...; an|\] \[|b1; ...; bn|\]] calls in turn 
+
+    (** [iter2 f \[|a1; ...; an|\] \[|b1; ...; bn|\]] calls in turn
         [f a1 b1; ...; f an bn]. *)
     val iter2 : ('a -> 'b -> 'c) -> 'a array -> 'b array -> unit
-   
+
     (** [rev_iter f a] is the same as [iter f a], but iterates from
         right to left. *)
     val rev_iter : ('a -> 'b) -> 'a array -> unit
 
     exception Found
-    
+
     (** [exists p \[|a1; ...; an|\]] checks if at least one element of
-        the array satisfies the predicate [p]. 
+        the array satisfies the predicate [p].
         @raise Found when the predicate is satisfied. *)
     val exists : ('a -> bool) -> 'a array -> bool
 
     (** [for_all p \[|a1; ...; an|\]] checks if all elements of the
-        array satisfy the predicate [p]. *) 
+        array satisfy the predicate [p]. *)
     val for_all : ('a -> bool) -> 'a array -> bool
-   
+
     (** [count f a] applies the boolean function [f] on each element
         of the array [a] and returns the number of times that [f] returns
         [true]. *)
     val count : ('a -> bool) -> 'a array -> int
-    
+
     (** [min a] returns the mininum value of the array [a]. *)
     val min : 'a array -> 'a
 
@@ -218,7 +219,7 @@ module Array :
     (** [argmin a] returns the index of the smallest value in the
         array [a]. *)
     val argmin : 'a array -> int
- 
+
     (** [argmax a] returns the index of the largest value in the array
         [a]. *)
     val argmax : 'a array -> int
@@ -229,17 +230,17 @@ module Array :
     (** [transpose m] transposes the matrix [m] represented as an
         array of arrays. *)
     val transpose : 'a array array -> 'a array array
-    
+
     (** The elements of the argument are all concatenated together (in
         the same order) to give the result. Not tail-recursive. *)
     val flattenl : 'a list array -> 'a array
 
     (** Flatten a matrix (array of array) into an array. *)
     val flatten : 'a array array -> 'a array
-		
+
     (** [rev_flatten a dimx dimy] creates a matrix given an array and
         the dimension of the matrix. *)
-    val rev_flatten : 'a array -> int -> int -> 'a array array 
+    val rev_flatten : 'a array -> int -> int -> 'a array array
 
     (** [filter p a] returns all the elements of the array [a] that
         satisfy the predicate [p]. *)
@@ -254,27 +255,27 @@ module Array :
 
     (** @return a new array which is the reverse of the argument. *)
     val rev : 'a array -> 'a array
-    
+
     (** @deprecated  Use [transpose] instead. *)
     val trans: 'a array array -> 'a array array
-    
-    (** [take a ai] removes the indices [ai] from the array [a]. *) 
+
+    (** [take a ai] removes the indices [ai] from the array [a]. *)
     val take: 'a array -> int array -> 'a array
 
     (** [takeCol m cols] removes the columns [cols] from the matrix
-        [m]. The matrix [m] is represented using an array of arrays. *) 
+        [m]. The matrix [m] is represented using an array of arrays. *)
     val takeCol: 'a array array -> int array -> 'a array array
 
     (** [takeRow m rows] removes the rows [rows] from the matrix [m].
-        The matrix [m] is represented using an array of arrays. *) 
+        The matrix [m] is represented using an array of arrays. *)
     val takeRow: 'a array array -> int array -> 'a array array
-    
-    (** [range n] creates an array with values from 0 to [n-1]. *)  
+
+    (** [range n] creates an array with values from 0 to [n-1]. *)
     val range: int -> int array
 
     (** Creates a new array such that if the [i]th entry of the given
         array has value [v], then the [i]th entry of the new array
-        contains the pair [(v,i)]. *) 
+        contains the pair [(v,i)]. *)
     val augment: 'a array -> ('a*int) array
 
     (** {5 Functions from the original Array module} *)
@@ -306,20 +307,20 @@ module Array :
     val fast_sort : ('a -> 'a -> int) -> 'a array -> unit
     external unsafe_get : 'a array -> int -> 'a = "%array_unsafe_get"
     external unsafe_set : 'a array -> int -> 'a -> unit = "%array_unsafe_set"
-    
+
   end
 
 (** [Hashset] is similar to [Hashtbl], but it stores only keys, and
 the value is [unit] for all keys. @see
 "http://caml.inria.fr/pub/docs/manual-ocaml/libref/Hashtbl.html" for
-the description of the methods for hash tables. *)  
+the description of the methods for hash tables. *)
 module Hashset :
   sig
     type 'a t = ('a, unit) Hashtbl.t
-    
+
     (** [create n] creates a new, empty hash set with initial size [n]. *)
     val create : ?random:bool -> int -> ('a, 'b) Hashtbl.t
-    
+
     (** [add hs x] adds [x] to hash set [hs]. *)
     val add : ('a, unit) Hashtbl.t -> 'a -> unit
 
@@ -333,15 +334,15 @@ module Hashset :
         [i1 ... iN] are the items in [hs]. *)
     val fold : ('a -> 'b -> 'b) -> ('a, unit) Hashtbl.t -> 'b -> 'b
 
-    (** Converts the given hash set into a list. *) 
+    (** Converts the given hash set into a list. *)
     val to_list : ('a, unit) Hashtbl.t -> 'a list
 
     (** [sum_map f hs] applies f to all items in [hs], returns the sum
-        of all the results. [f] returns an int. *)  
+        of all the results. [f] returns an int. *)
     val sum_map : ('a -> int) -> ('a, unit) Hashtbl.t -> int
 
     (** [sum_map f hs] applies f to all items in [hs], returns the sum
-        of all the results. [f] returns a float. *)  
+        of all the results. [f] returns a float. *)
     val sumf_map : ('a -> float) -> ('a, unit) Hashtbl.t -> float
 
     (** [filter f hs] applies the boolean function [f] on every item
@@ -393,7 +394,7 @@ module Heap :
 
     (** [is_empty h] checks if the heap [h] is empty. *)
     val is_empty : 'a heap -> bool
-    
+
     (** [grow h] automatically resizes the size of the heap [h]. *)
     val grow : 'a heap -> unit
 
@@ -403,7 +404,7 @@ module Heap :
     (** [sift_down h root] moves [root] down to satisfy the heap
         property for the heap [h]. *)
     val sift_down : 'a heap -> int -> unit
-    
+
     (** [sift_up h child] moves [child] up to satisfy the heap
         property for the heap [h]. *)
     val sift_up : 'a heap -> int -> unit
@@ -418,18 +419,18 @@ module Heap :
     (** [get h i] gets the [i]th element in the heap [h]. *)
     val get : 'a heap -> int -> 'a
 
-    (** [remove h i] removes the [i]th element in the heap [h]. *) 
+    (** [remove h i] removes the [i]th element in the heap [h]. *)
     val remove : 'a heap -> int -> unit
 
     (** [min h] accesses the smallest element in the heap [h]. *)
     val min : 'a heap -> 'a
 
     (** [rebuild h] fixes all out-of-order elements in the heap [h] in
-        linear time. *)    
+        linear time. *)
     val rebuild : 'a heap -> unit
 
     (** [build lessthan a] builds a heap from the existing array [a]
-        with respect to the comparison function [lessthan].  
+        with respect to the comparison function [lessthan].
         Runs in O(n) time. *)
     val build : ('a -> 'a -> bool) -> 'a array -> 'a heap
 
@@ -462,14 +463,14 @@ module Timer :
 
     (** Hash of start times. *)
     val start_time_hash : (string, float) Hashtbl.t
- 
- 
+
+
     (** Hash of accumulated elapsed times. *)
     val elapsed_time_hash : (string, float) Hashtbl.t
-    
+
     (** Hash of last elapsed times. *)
     val last_elapsed_time_hash : (string, float) Hashtbl.t
-    
+
     (** [starts name] starts a timer with the name [name].  Does
         nothing if timer has already been started. *)
     val start : string -> unit
@@ -485,9 +486,9 @@ module Timer :
     val elapsed : string -> float
 
     (** [last_elapsed name] returns the amount of time elapsed between
-        last start and stop on timer [name]. *) 
+        last start and stop on timer [name]. *)
     val last_elapsed: string -> float
-    
+
     (** [stop name] stops the timer [name].  This pauses it until
         restarted with start. *)
     val stop : string -> unit
@@ -504,7 +505,7 @@ type libra_filetype =
     ACFile (** [.ac] files for arithmetic circuits. *)
   | BNFile (** [.bn] files for Bayesian networks. *)
   | MNFile (** [.mn] files for Markov networks. *)
-  | DataFile (** [.data] files for data. *) 
+  | DataFile (** [.data] files for data. *)
   | SPNFile (** [.spn] files for sum-product networks. *)
   | UnknownFile
 val filetype : string -> libra_filetype
@@ -554,7 +555,7 @@ val logsumexp : float list -> float
 (** [logsumexp xa] computes [log(\sum_i e^{x_i})], where [x_i] is the
     [i]th entry of the float array [xa]. This function avoids numerical
     underflow. *)
-val alogsumexp : float array -> float
+val alogsumexp : Complex.t array -> Complex.t
 
 (** [logsumexp2 x y] computes [log(exp(x)+exp(y)], but avoids
     numerical underflow. *)
@@ -569,7 +570,7 @@ val dotprod : float list -> float list -> float
 
 (** [dotprod_bias xl yl bias] returns the dot product of the two float
     lists [xl] and [yl] plus the bias [bias]. If the size of [yl] is
-    greater than [xl] it ignores the extra elements in [yl]. 
+    greater than [xl] it ignores the extra elements in [yl].
     @raise EmptyList if the size of [xl] is greater than the size of [yl]. *)
 val dotprod_bias : float list -> float list -> float -> float
 
@@ -599,15 +600,15 @@ val normalize_inplace_raw : float array -> unit
 (** [normalize_inplace_log xa] Normalizes the elements of [xa] so that
     they represent the log probabilities of a valid probability
     distribution. Modifies [xa] in place. *)
-val normalize_inplace_log : float array -> unit
+val normalize_inplace_log : Complex.t array -> unit
 
 (** Similar to [normalize_inplace_raw], but returns a new array as the
-    result (does not modify the argument. *)  
+    result (does not modify the argument. *)
 val normalize_raw : float array -> float array
 
 (** Similar to [normalize_inplace_log], but returns a new array as the
-    result (does not modify the argument. *)  
-val normalize_log : float array -> float array
+    result (does not modify the argument. *)
+val normalize_log : Complex.t array -> Complex.t array
 
 
 (** {5 Functions for gathering statistics conveniently } *)
@@ -639,11 +640,11 @@ val stats_var : stats_counter -> float
 val stats_stddev : stats_counter -> float
 
 (** [stats_stderr s] returns the standard deviation of the mean *)
-val stats_stderr : stats_counter -> float 
+val stats_stderr : stats_counter -> float
 
 
 (** {5 Common argument handling} *)
- 
+
 (** Set of arguments common to most programs *)
 val common_arguments : (string * Arg.spec * string) list
 
@@ -686,7 +687,7 @@ val register_log : string -> out_channel -> unit
     given [name].*)
 val unregister_log : string -> unit
 
-(** Checks if the given name maps to any output channel. *) 
+(** Checks if the given name maps to any output channel. *)
 val log_exists : string -> bool
 
 (** Returns the output channel corresponding to the given name. *)
@@ -746,15 +747,14 @@ val common_log_init : unit -> unit
 (** Prints the given string into the standard output. *)
 val debug : string -> unit
 
-(** Converts an int list to a string. *)  
+(** Converts an int list to a string. *)
 val string_of_ilist : int list -> string
 
-(** Converts a float list to a string. *)  
+(** Converts a float list to a string. *)
 val string_of_flist : float list -> string
 
-(** Converts an int array to a string. *)  
+(** Converts an int array to a string. *)
 val string_of_iarray : int array -> string
 
-(** Converts a float array to a string. *)  
+(** Converts a float array to a string. *)
 val string_of_farray : float array -> string
-

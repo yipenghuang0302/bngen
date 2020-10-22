@@ -39,21 +39,21 @@ exception UnsupportedFactorType
  * Read a file in BIF format
  *)
 
-let of_parse (netname, vars, probs) = 
+let of_parse (netname, vars, probs) =
 
   (* Handle all the variable declarations *)
   let numvars = List.length vars in
   let name_to_varidx = Hashtbl.create (2 * numvars) in
   let hash_create i = Hashtbl.create 10 in
-  let name_to_validx = Array.init numvars hash_create in 
+  let name_to_validx = Array.init numvars hash_create in
   let idx = ref (-1) in
 
   let parse_var (n, vnl) =
     incr idx ;
     Hashtbl.add name_to_varidx n !idx ;
-    let h = name_to_validx.(!idx) in 
+    let h = name_to_validx.(!idx) in
     Array.iteri (fun i s -> Hashtbl.add h s i) (Array.of_list vnl) ;
-    {vname = n; idx = !idx; range = List.length vnl; 
+    {vname = n; idx = !idx; range = List.length vnl;
      valnames = Array.of_list vnl} in
   let avars = Array.of_list (List.map parse_var vars) in
   let lookup_var n =
@@ -81,21 +81,21 @@ let of_parse (netname, vars, probs) =
       let idx = ref 0 in
       for i = 0 to Array.length aparnames - 1 do
         idx := !idx * pardim.(i);
-        let offset = 
+        let offset =
           try Hashtbl.find parvalh.(i) astate.(i)
           with Not_found -> failwith
-("Error loading network: unknown state " ^ astate.(i) 
- ^ "of variable " ^ aparnames.(i) 
+("Error loading network: unknown state " ^ astate.(i)
+ ^ "of variable " ^ aparnames.(i)
  ^ " in conditional probability distribution.") in
         idx := !idx + offset
       done ; !idx in
     let maxdim = Array.fold_right ( * ) pardim 1 in
-    let mkdist _ = Array.make var.range 0.0 in
+    let mkdist _ = Array.make var.range Complex.zero in
     let cpt = Array.init maxdim mkdist in
-    let assign (state,dist) = 
-      cpt.(get_idx state) <- Array.of_list (List.map log dist) in 
+    let assign (state,dist) =
+      cpt.(get_idx state) <- Array.of_list (List.map Complex.log dist) in
     List.iter assign probs;
-    parents.(var.idx) <- List.map lookup_var parnames; 
+    parents.(var.idx) <- List.map lookup_var parnames;
     dists.(var.idx) <- Table cpt in
 
   (* This builds all of the CPTs, places them in the dists array,
@@ -103,16 +103,16 @@ let of_parse (netname, vars, probs) =
   List.iter build_cpt probs;
   let children = make_children parents in
   let topo_vars = make_topo_vars avars parents children in
-  
+
   (* Put it all together in the final BN *)
-  {name=netname; acyclic=true; vars=avars; dists=dists; 
+  {name=netname; acyclic=true; vars=avars; dists=dists;
    name_to_varidx=name_to_varidx; name_to_validx=name_to_validx;
    topo_vars=topo_vars; parents=parents; children=children}
 
 
 let parse channel =
   let lexbuf = Lexing.from_channel channel in
-  BifParser.bn BifLexer.lexer lexbuf 
+  BifParser.bn BifLexer.lexer lexbuf
 
 
 let load channel = of_parse (parse channel)
@@ -126,14 +126,14 @@ let output_var out v =
   fprintf out "variable %s {\n" v.vname;
   fprintf out "  type discrete [ %d ] { " v.range;
   output_sep out ", " v.valnames;
-  output_string out " };\n}\n" 
+  output_string out " };\n}\n"
 
 let output_dist out dist =
   let dstrs = Array.map (fun p -> string_of_float (exp p)) dist in
   output_sep out ", " dstrs;
   output_string out ";\n"
 
-let output_cpd out bn v =
+(* let output_cpd out bn v =
   (* Header, e.g. "probability ( WetGrass | Sprinkler,Rain ) {" *)
   fprintf out "probability ( %s" bn.vars.(v).vname;
   let numparents = List.length bn.parents.(v) in
@@ -144,9 +144,9 @@ let output_cpd out bn v =
   end;
   output_string out " ) {\n";
 
-  let table = match bn.dists.(v) with 
+  let table = match bn.dists.(v) with
     Tree _ -> raise UnsupportedFactorType
-  | Table t -> t 
+  | Table t -> t
   | FactorSet _ -> raise UnsupportedFactorType in
 
   (* If there are no parents, just print the marginals *)
@@ -160,8 +160,8 @@ let output_cpd out bn v =
     let lparents = List.rev bn.parents.(v) in
     let pa = Array.of_list bn.parents.(v) in
     try for i = 0 to Array.length table - 1 do
-      let parentvals = Array.map 
-        (fun p -> bn.vars.(p).valnames.(varstate.(p))) pa in 
+      let parentvals = Array.map
+        (fun p -> bn.vars.(p).valnames.(varstate.(p))) pa in
       output_string out "  (";
       output_sep out "," parentvals;
       output_string out ") ";
@@ -169,13 +169,13 @@ let output_cpd out bn v =
       Varstate.incstate (schema bn) varstate lparents
     done with Varstate.NoMoreStates -> ()
   end;
-  fprintf out "}\n\n"
+  fprintf out "}\n\n" *)
 
 
-let output out bn =
-  fprintf out "network %s {\n}\n\n" 
+(* let output out bn =
+  fprintf out "network %s {\n}\n\n"
     (if bn.name = "" then "noname" else bn.name);
   Array.iter (output_var out) bn.vars;
   for i = 0 to Array.length bn.vars - 1 do
     output_cpd out bn i
-  done
+  done *)

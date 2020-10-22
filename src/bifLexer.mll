@@ -26,7 +26,9 @@ rule lexer = parse
     [' ' '\t'] {lexer lexbuf}
   | ("//" [^ '\n''\r']*)? nl {start_next_line lexbuf; lexer lexbuf(*; TEOL*)}
   | digits {Tident(i_ident(Lexing.lexeme lexbuf))}
-  | digits '.'? digits? (['e' 'E'] '-'? digits)? 
+  | '-'? digits '.'? digits? (['e' 'E'] '-'? digits)? '+' '-'? digits '.'? digits? (['e' 'E'] '-'? digits)? 'i'
+      {Tident(c_ident(Lexing.lexeme lexbuf))}
+  | digits '.'? digits? (['e' 'E'] '-'? digits)?
       {Tident(f_ident(Lexing.lexeme lexbuf))}
   | "network" {Tnetwork}
   | "variable" {Tvariable}
@@ -47,7 +49,7 @@ rule lexer = parse
   | '[' {Tlbracket}
   | ']' {Trbracket}
   | _ {let lcp = lexbuf.lex_curr_p in
-       failwith((Lexing.lexeme lexbuf) ^ 
+       failwith((Lexing.lexeme lexbuf) ^
        ": line " ^ string_of_int lcp.pos_lnum ^
        ", offset " ^ string_of_int (lcp.pos_cnum - lcp.pos_bol))}
   | eof {TEOF}

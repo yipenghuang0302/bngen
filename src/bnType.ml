@@ -41,11 +41,11 @@ type variable = {vname: string;
                  valnames: string array}
 
 type cpnode = (* array contains log conditional probabilities for this leaf *)
-              Leaf of float array
+              Leaf of Complex.t array
               (* split var, value, true branch, false branch *)
-            | Vertex of int * int * cpnode * cpnode 
+            | Vertex of int * int * cpnode * cpnode
 
-type cpd = Table of float array array
+type cpd = Table of Complex.t array array
          | Tree  of cpnode
          | FactorSet of Mn.Factor.factor list
 
@@ -58,7 +58,7 @@ type network = {name: string;
                 (* The following fields can all be derived from the
                    previous fields using provided functions.  This
                    makes them redundant, but convenient. *)
-                children: int list array; 
+                children: int list array;
                 name_to_varidx: (string, int) Hashtbl.t;
                 name_to_validx: (string, int) Hashtbl.t array;
                 topo_vars: variable array}
@@ -74,7 +74,7 @@ let rec tree_params = function
   | Vertex (_,_,l,r) -> tree_params l + tree_params r
 
 let dist_params = function
-  | Table t -> 
+  | Table t ->
     if Array.length t = 0 then 0
     else (Array.length t) * (Array.length t.(0))
   | Tree n -> tree_params n
@@ -82,20 +82,20 @@ let dist_params = function
 
 
 (*
- * Functions for creating Bayesian networks from scratch 
+ * Functions for creating Bayesian networks from scratch
  *)
 
 let create_var idx dim =
-  {vname=(sprintf "Variable_%d" idx); 
+  {vname=(sprintf "Variable_%d" idx);
    idx = idx;
    range = dim;
-   valnames = Array.init dim string_of_int} 
+   valnames = Array.init dim string_of_int}
 
 let create_default_cpt var =
-  let dim = var.range in 
-  let uniform = Array.make dim (1. /. (float_of_int dim)) in
+  let dim = var.range in
+  let uniform = Array.make dim (Complex.div Complex.one {re=float_of_int dim;im=0.0}) in
   Table [| uniform |]
- 
+
 (* Create hash maps from variable name -> index, and
  * from each variable's values -> value index
  *)
@@ -110,7 +110,7 @@ let build_namehashes vars =
   (varhash, valhash)
 
 (* Create array of child lists, given an array of parent lists *)
-let make_children allparents = 
+let make_children allparents =
   let children = Array.make (Array.length allparents) [] in
   let add_child i i_parent =
     children.(i_parent) <- i :: children.(i_parent) in
@@ -118,13 +118,13 @@ let make_children allparents =
   children
 
 (* Create list of variables in topographic order *)
-let make_topo_vars vars allparents allchildren = 
-  let numv = Array.length allchildren in 
+let make_topo_vars vars allparents allchildren =
+  let numv = Array.length allchildren in
   let a = Array.make numv vars.(0) in
-  let nump v = List.length allparents.(v.idx) in 
-  let parents_left = Array.map nump vars in 
+  let nump v = List.length allparents.(v.idx) in
+  let parents_left = Array.map nump vars in
   let i = ref 0 in
-  let rec visited_parent v = 
+  let rec visited_parent v =
     parents_left.(v) <- parents_left.(v) - 1;
     if parents_left.(v) = 0 then begin
       a.(!i) <- vars.(v);
@@ -132,15 +132,15 @@ let make_topo_vars vars allparents allchildren =
       List.iter visited_parent allchildren.(v)
     end in
   for v = 0 to Array.length vars - 1 do
-    if allparents.(v) = [] then begin 
+    if allparents.(v) = [] then begin
       parents_left.(v) <- parents_left.(v) + 1;
-      visited_parent v 
-    end 
+      visited_parent v
+    end
   done;
   a
 
 (* Create an empty network with the given variable schema *)
-let create_empty_network schema = 
+let create_empty_network schema =
   let numvars = Array.length schema in
   let vars = Array.mapi create_var schema in
   let cpts = Array.map create_default_cpt vars in
@@ -161,7 +161,7 @@ let create_empty_network schema =
 (* Update the children lists and topological variable order *)
 let update_children_and_topo_vars bn =
   let new_children = make_children bn.parents in
-  let new_topo = make_topo_vars bn.vars bn.parents new_children in 
+  let new_topo = make_topo_vars bn.vars bn.parents new_children in
   for i = 0 to (Array.length bn.vars) - 1 do
     bn.children.(i) <- new_children.(i);
     bn.topo_vars.(i) <- new_topo.(i)
@@ -169,10 +169,10 @@ let update_children_and_topo_vars bn =
 
 (* Update a CPT.  (Modifies BN in-place) *)
 (* NOTE: cpt_values array is never copied! Caller should not modify. *)
-let set_cpt bn var_idx parents cpt_values =
+(* let set_cpt bn var_idx parents cpt_values =
   bn.parents.(var_idx) <- parents;
   bn.dists.(var_idx) <- Table cpt_values;
-  update_children_and_topo_vars bn
+  update_children_and_topo_vars bn *)
 
 (* Convert a bitvector to a list of true indices *)
 let bitvector_to_list a =
@@ -181,7 +181,7 @@ let bitvector_to_list a =
     if a.(i) then
       head := i :: !head
   done;
-  List.rev !head 
+  List.rev !head
 
 let factorset_parents numvars var fl =
   (* Build up bitvector of parents *)
@@ -198,7 +198,7 @@ let tree_parents numvars root =
   let rec build_parents = function
     | Vertex(var, value, l, r) ->
         parents.(var) <- true;
-        build_parents l; 
+        build_parents l;
         build_parents r
     | Leaf _ -> () in
   build_parents root;
@@ -239,7 +239,7 @@ let state_to_pidx bn v state =
 
 (* Convert a tree with distributions at the leaves to one with
    potential function values at the leaves. *)
-let rec tree_to_factor cvar = function
+(* let rec tree_to_factor cvar = function
 | Leaf a ->
   let rec make_leaf i =
     let l = Mn.Factor.Leaf a.(i) in
@@ -250,26 +250,26 @@ let rec tree_to_factor cvar = function
   let l' = tree_to_factor cvar left in
   let r' = tree_to_factor cvar right in
   Mn.Factor.Vertex(var, value, l', r')
-  
+
 let rec table_to_factor schema cvar parents t =
-  if Array.length t == 0 then 
+  if Array.length t == 0 then
     [||]
   else
     let len = Array.length t in
     let getval i = t.(i mod len).(i/len) in
-    Array.init (Array.length t * Array.length t.(0)) getval
-  
-let cpd_to_factors bn cvar = function
-| Tree t -> 
+    Array.init (Array.length t * Array.length t.(0)) getval *)
+
+(* let cpd_to_factors bn cvar = function
+| Tree t ->
   [Mn.Factor.Tree (tree_to_factor cvar t)]
-| Table t -> 
+| Table t ->
   let t' = table_to_factor (schema bn) cvar bn.parents.(cvar) t in
   let vars = Array.of_list (cvar :: bn.parents.(cvar)) in
   let ranges = Array.map (get_range bn) vars in
   [Mn.Factor.Table (vars, ranges, t')]
-| FactorSet fl -> fl
+| FactorSet fl -> fl *)
 
-let to_mn bn =
+(* let to_mn bn =
   let schema = schema bn in
   let factors = Array.mapi (cpd_to_factors bn) bn.dists in
-  Mn.create schema (Array.flattenl factors)
+  Mn.create schema (Array.flattenl factors) *)

@@ -33,12 +33,12 @@ open Ext
 
 (* Utility sub-modules *)
 module Varstate =
-struct 
+struct
   include Varstate
 end
 
 module Factor =
-struct 
+struct
   include Factor
 end
 
@@ -52,7 +52,7 @@ type network = {schema: int array;
 
 let numvars mn = Array.length mn.schema
 let numweights mn = Array.sum_map Factor.numparams mn.factors
-let get_range mn i = mn.schema.(i) 
+let get_range mn i = mn.schema.(i)
 let num_values = get_range
 let schema mn = Array.copy mn.schema
 let factors mn = mn.factors
@@ -68,14 +68,14 @@ let create schema factors =
   {schema=schema; factors=factors; var_to_factors=var_to_factors}
 
 (* Unnormalized log probability of a given state. *)
-let raw_logprob mn state =
+(* let raw_logprob mn state =
   if Array.exists (fun x -> x < 0) state then
     invalid_arg "raw_logprob"
-  else 
-    Array.sumf_map (Factor.log_value state) mn.factors
+  else
+    Array.sumf_map (Factor.log_value state) mn.factors *)
 
 (* Log probability distribution over X_i, given its Markov blanket *)
-let mb_logdist mn x i = 
+(* let mb_logdist mn x i =
   (*if Array.exists (fun x -> x < 0) x then
     invalid_arg "mb_logdist";
   *)
@@ -85,37 +85,37 @@ let mb_logdist mn x i =
     List.sumf_map (Factor.log_value x) mn.var_to_factors.(i) in
   let dist = Array.init mn.schema.(i) valsum in
   x.(i) <- orig_ival;
-  normalize_log dist
+  normalize_log dist *)
 
 (* Pseudo-log-likelihood *)
-let pll mn x = 
+(* let pll mn x =
   if Array.length x != Array.length mn.schema then
     invalid_arg "pll"
   else begin
-    let mb_logscore mn x i = 
+    let mb_logscore mn x i =
       (mb_logdist mn x i).(x.(i)) in
     let total = ref 0. in
     for i = 0 to Array.length mn.schema - 1 do
       total := !total +. mb_logscore mn x i
     done;
     !total
-  end
+  end *)
 
 (* Build a new MN with simpler factors, conditioned on evidence *)
-let simplify mn ev =
+(* let simplify mn ev =
   let schema = Array.copy mn.schema in
   let factors = Array.map (Factor.simplify ev) mn.factors in
   let var_to_factors = build_var_to_factors schema factors in
   {schema=schema;
    factors=factors;
-   var_to_factors=var_to_factors}
+   var_to_factors=var_to_factors} *)
 
 let to_features mn =
   List.flatten (Array.to_list (Array.map Factor.to_features mn.factors))
 
 (* Update weights using a weight vector.
  * Modifies the MN in place. *)
-let set_weights mn w = 
+(* let set_weights mn w =
   let wi = ref 0 in
   for i = 0 to Array.length mn.factors - 1 do
     dlogf "Setting weights for factor %d\n" i;
@@ -128,19 +128,19 @@ let set_weights mn w =
   let new_v2f = build_var_to_factors mn.schema mn.factors in
   for i = 0 to Array.length mn.schema - 1 do
     mn.var_to_factors.(i) <- new_v2f.(i)
-  done
+  done *)
 
-let input_features_lex lexbuf =
+(* let input_features_lex lexbuf =
   let fl = MnParser.featurelist MnLexer.lexer lexbuf in
   let pf2f (weight_id, weight, cond) =
-    {Factor.weight_id=weight_id; 
-     Factor.weight=weight; 
+    {Factor.weight_id=weight_id;
+     Factor.weight=weight;
      Factor.cond=Array.of_list cond} in
-  List.rev (List.rev_map pf2f fl)
+  List.rev (List.rev_map pf2f fl) *)
 
-let input_features chan =
+(* let input_features chan =
   let lexbuf = Lexing.from_channel chan in
-  input_features_lex lexbuf
+  input_features_lex lexbuf *)
 
 (* I/O *)
 module MP = MnParseTypes
@@ -153,54 +153,54 @@ let filename_is_uai filename =
   Str.string_match (Str.regexp ".*\\.uai.*") filename 0
   || Str.string_match (Str.regexp ".*\\.simple.*") filename 0
 
-let load chan =
+(* let load chan =
   let schema = Data.input_example chan in
   let lexbuf = Lexing.from_channel chan in
   let pmn = MnParser.mn MnLexer.lexer lexbuf in
   (* Convert the parsed factors to actual factors.
      TODO: Eventually support shared weights. *)
-  let factors_l = 
+  let factors_l =
     List.rev (List.rev_map (Factor.pfactor_to_factor schema) pmn.MP.factors) in
-  let factors = Array.of_list factors_l in 
+  let factors = Array.of_list factors_l in
   let var_to_factors = build_var_to_factors schema factors in
   {schema=schema;
    factors=factors;
-   var_to_factors=var_to_factors}
+   var_to_factors=var_to_factors} *)
 
-let load_uai chan =
+(* let load_uai chan =
   let (schema, factors) = UaiFormat.input chan in
-  create schema factors
+  create schema factors *)
 
-let output out mn =
+(* let output out mn =
   Data.output_schema out mn.schema;
   output_string out "MN {\n";
   Array.iter (Factor.output_factor out) mn.factors;
-  output_string out "}\n"
+  output_string out "}\n" *)
 
-let output_uai out mn =
-  UaiFormat.output out mn.schema mn.factors 
+(* let output_uai out mn =
+  UaiFormat.output out mn.schema mn.factors *)
 
 (* Load an MN, inferring its filetype by its filename *)
-let load_auto filename =
+(* let load_auto filename =
   let channel = open_in filename in
-  let mn = 
-    if filename_is_mn filename then 
+  let mn =
+    if filename_is_mn filename then
       load channel
-    else if filename_is_uai filename then 
+    else if filename_is_uai filename then
       load_uai channel
     else
       (* Unknown filetype.  Assume it's a .mn. *)
       load channel in
-  close_in channel; mn
-  
+  close_in channel; mn *)
+
 (* Write an MN to disk, inferring its filetype by its filename *)
-let write_auto filename mn = 
+(* let write_auto filename mn =
   let channel = open_out filename in
-  if filename_is_mn filename then 
+  if filename_is_mn filename then
     output channel mn
-  else if filename_is_uai filename then 
+  else if filename_is_uai filename then
     output_uai channel mn
   else
     (* Unknown filetype.  Assume it's a .mn. *)
     output channel mn ;
-  close_out channel
+  close_out channel *)

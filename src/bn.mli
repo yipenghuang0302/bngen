@@ -39,7 +39,7 @@
 (** A domain schema specifies the cardinality of each (discrete) variable. *)
 type schema_t = int array
 
-(** A BN variable structure includes additional information about variable 
+(** A BN variable structure includes additional information about variable
     and value names, for compatibility with some standard BN file
     formats. (Variable and value names are not supported by most of Libra.) *)
 type variable =
@@ -50,16 +50,16 @@ type variable =
   valnames : string array;  (** String name for each possible value of the variable. *)
 }
 
-(** Represents a node in a tree-structured CPD. *) 
+(** Represents a node in a tree-structured CPD. *)
 type cpnode =
   BnType.cpnode =
-    Leaf of float array (** Array contains log conditional probabilities for this leaf *)
+    Leaf of Complex.t array (** Array contains log conditional probabilities for this leaf *)
   | Vertex of int * int * cpnode * cpnode (** Split var, value, true branch, false branch *)
 
 (** A CPD can be represented as a table, tree, or set of factors. *)
 type cpd =
   BnType.cpd =
-    Table of float array array (** Table representation of CPDs. *)
+    Table of Complex.t array array (** Table representation of CPDs. *)
   | Tree of cpnode (** Tree representation of CPDs. *)
   | FactorSet of Mn.Factor.factor list (** Factor representation of CPDs. *)
 
@@ -67,7 +67,7 @@ type cpd =
 (** Represents a Bayesian network or dependency network. The fields
     [children], [name_to_varidx], [name_to_validx], and [topo_vars] can
     all be derived from the previous fields using provided functions.
-    This makes them redundant, but they exist for convenience. *) 
+    This makes them redundant, but they exist for convenience. *)
 type network =
   BnType.network = {
   name : string; (** Name of the network or domain. Arbitrary and mostly unused. *)
@@ -140,7 +140,7 @@ val numparams : network -> int -> int
 val create_var : int -> int -> variable
 
 (** @return a table cpd which represents a uniform distribution for
-    the given variable. *) 
+    the given variable. *)
 val create_default_cpt : variable -> cpd
 
 (** Create hash maps from variable name -> index, and from each
@@ -166,7 +166,7 @@ val update_children_and_topo_vars : network -> unit
 (** [set_cpt bn var_idx parents cpt_values] updates a CPT. Modifies BN
     in-place by replacing the parents of [var_idx] with [parents] and the
     distribtion of [var_idx] with [cpt_values] *)
-val set_cpt : network -> int -> int list -> float array array -> unit
+(* val set_cpt : network -> int -> int list -> float array array -> unit *)
 
 (** [set_cptree bn var_idx root] updates the CPD of variable [var_idx]
     in network [bn] with a CPD with root node [root]. Modifies [bn]
@@ -179,13 +179,13 @@ val set_cptree : network -> int -> cpnode -> unit
 val set_factorset : network -> int -> Mn.Factor.factor list -> unit
 
 (** [cpd_to_factors bn cvar cpd] converts [cpd] associated with
-    variable [cvar] of network [bn] to Markov network factors *) 
-val cpd_to_factors :
-  network -> Mn.Factor.variable -> cpd -> Mn.Factor.factor list
+    variable [cvar] of network [bn] to Markov network factors *)
+(* val cpd_to_factors :
+  network -> Mn.Factor.variable -> cpd -> Mn.Factor.factor list *)
 
 (** Converts the Bayesian network to a Markov network by introducing
-    one factor for each CPD. *) 
-val to_mn : network -> Mn.network
+    one factor for each CPD. *)
+(* val to_mn : network -> Mn.network *)
 
 (** [simplify bn ev] simplifies CPDs of netwprk [bn] given evidence
     [ev] if the CPDs are represented using trees or factor sets. This
@@ -193,39 +193,39 @@ val to_mn : network -> Mn.network
     modifies the BN.
 {b NOTE}: Resulting CPDs may not be normalized, and hence be merely
   potential functions, not conditional probability distributions. *)
-val simplify : network -> Mn.Factor.varvalue array -> network
+(* val simplify : network -> Mn.Factor.varvalue array -> network *)
 
 (** {6 Evaluation of BNs} *)
 
 (** [tree_logprob x cpdnode] @return a log conditional probability
     from a tree-based CPD [cpdnode] for example [x]. *)
-val tree_logprob : int array -> cpnode -> float array
+(* val tree_logprob : int array -> cpnode -> float array *)
 
 (** [node_logscore bn x v]  @return log conditional probability of the
     current state of variable [v] given its parents for example [x]. *)
-val node_logscore : network -> Mn.Factor.varvalue array -> int -> float
+(* val node_logscore : network -> Mn.Factor.varvalue array -> int -> float *)
 
 (** [mb_logprob bn x i] @return log probability of X_i given its
     Markov blanket. *)
-val mb_logprob : network -> Mn.Factor.varvalue array -> int -> float array
+(* val mb_logprob : network -> Mn.Factor.varvalue array -> int -> float array *)
 
 (** [mb_prob bn x i] @return probability of X_i given its Markov
     blanket. *)
-val mb_prob : network -> Mn.Factor.varvalue array -> int -> float array
+(* val mb_prob : network -> Mn.Factor.varvalue array -> int -> float array *)
 
 (** [cond_prob bn x i] @return probability of X_i given its parents. *)
-val cond_prob : network -> Mn.Factor.varvalue array -> int -> float array
+val cond_prob : network -> Mn.Factor.varvalue array -> int -> Complex.t array
 
 
 (** [loglikelihood bn x] computes the log-likelihood of the network on
     a single example [x]. {b Note:} All values must be specified -- no
     missing data! *)
-val loglikelihood : network -> Mn.Factor.varvalue array -> float
+(* val loglikelihood : network -> Mn.Factor.varvalue array -> float *)
 
 (** [pll bn x] computes the pseudo-log-likelihood of the network on a
     single example [x]. {b Note:} All values must be specified -- no
     missing data! *)
-val pll : network -> Mn.Factor.varvalue array -> float
+(* val pll : network -> Mn.Factor.varvalue array -> float *)
 
 (** Utility function for sampling a multinomial given an array
     containing the probability of each state. *)
@@ -233,7 +233,7 @@ val sample_array : float array -> int
 
 (** Generates a single iid sample from the BN probability
     distribution. *)
-val sample : network -> Mn.Factor.varvalue array
+(* val sample : network -> Mn.Factor.varvalue array *)
 
 
 (** {6 Read/Write BNs} *)
@@ -242,19 +242,19 @@ val sample : network -> Mn.Factor.varvalue array
 val load_bif : in_channel -> BnType.network
 
 (** Output a BN in BIF format. *)
-val output_bif : out_channel -> BnType.network -> unit
+(* val output_bif : out_channel -> BnType.network -> unit *)
 
 (** Input a BN in .xmod format. *)
 val load_xmod : in_channel -> BnType.network
 
 (** Output a BN in .xmod format. *)
-val output_xmod : out_channel -> BnType.network -> unit
+(* val output_xmod : out_channel -> BnType.network -> unit *)
 
 (** Input a BN in CN format. *)
-val load_cn : in_channel -> BnType.network
+(* val load_cn : in_channel -> BnType.network *)
 
 (** Output a BN in CN format. *)
-val output_cn : out_channel -> BnType.network -> unit
+(* val output_cn : out_channel -> BnType.network -> unit *)
 
 
 (** Checks whether the filename ends with .xmod *)
@@ -269,13 +269,12 @@ val filename_is_cn : string -> bool
 (** Checks whether the filename ends with .dn *)
 val filename_is_dn : string -> bool
 
-(** Read a BN from a file, inferring the format from [filename]. 
-    See Section 4 of the {{: http://libra.cs.uoregon.edu/manual.pdf } 
+(** Read a BN from a file, inferring the format from [filename].
+    See Section 4 of the {{: http://libra.cs.uoregon.edu/manual.pdf }
     user manual}. *)
 val load_auto : string -> BnType.network
 
-(** Write the BN to a file, inferring the format from [filename]. 
-    See Section 4 of the {{: http://libra.cs.uoregon.edu/manual.pdf } 
+(** Write the BN to a file, inferring the format from [filename].
+    See Section 4 of the {{: http://libra.cs.uoregon.edu/manual.pdf }
     user manual}. *)
-val write_auto : string -> BnType.network -> unit
-
+(* val write_auto : string -> BnType.network -> unit *)

@@ -8,14 +8,14 @@ type expr =
     True
   | False
   | Ident of string
-  | Flip of float
+  | Flip of Complex.t * Complex.t
   | Not of expr
   | And of expr * expr
   | Or of expr * expr
   | Eq of expr * expr
   | Int of int * int (* value, size *)
   | Ite of expr * expr * expr
-  | Category of float List.t
+  | Category of Complex.t List.t
   | Tuple of expr * expr
 
 type letelem = string * typ * expr
@@ -33,6 +33,7 @@ let rec list_n n : int list =
   | n -> n :: list_n (n-1)
 
 exception NoMoreStates
+let log2 a = log a /. (log 2.0)
 
 (** Generates an assignment for the variable `var` *)
 let var_assgn (network : Bn.network) (var : Bn.variable) : letelem =
@@ -45,13 +46,13 @@ let var_assgn (network : Bn.network) (var : Bn.variable) : letelem =
       let catvalues = Bn.cond_prob network parent_values idx in
       (* add special case for flip *)
       if Array.length catvalues = 2 then
-        Flip(Array.get catvalues 0)
+        Flip(Array.get catvalues 0, Array.get catvalues 1)
       else
         Category(Array.to_list catvalues)
     | curparent::xs ->
       (* for each possible assignment to the parent, get a sub-expression *)
       let assignments = list_n ((Array.get cur_schema curparent)-1) in
-      let num_assgn = List.length assignments in
+      let num_assgn = int_of_float (ceil (log2 (float_of_int (List.length assignments)))) in
       (* add special case for Boolean parent *)
       if (Array.get cur_schema curparent) = 2 then
         (Array.set parent_values curparent 0;
@@ -86,8 +87,8 @@ let rec sym_string_of_expr (e:expr) : string =
   | True -> "true"
   | False -> "false"
   | Ident(s) -> s
-  | Flip(f) ->
-     Format.sprintf "flip %f" f
+  | Flip(f1, f2) ->
+    Format.sprintf "flip %f+%fi %f+%fi" f1.re f1.im f2.re f2.im
   | Not(Ident(s)) -> Format.sprintf "! (%s)" s
   | And(e1, e2) -> Format.sprintf "(%s && %s)" (sym_string_of_expr e1) (sym_string_of_expr e2)
   | Or(e1, e2) -> Format.sprintf "(%s || %s)" (sym_string_of_expr e1) (sym_string_of_expr e2)
@@ -96,9 +97,9 @@ let rec sym_string_of_expr (e:expr) : string =
   | Category(l) ->
     let res = List.foldi l ~init:(Format.sprintf "discrete(") ~f:(fun idx acc i ->
         if idx = 0 then
-          Format.sprintf "%s%f" acc i
+          Format.sprintf "%s%f+%fi" acc i.re i.im
         else
-          Format.sprintf "%s,%f" acc i
+          Format.sprintf "%s,%f+%fi" acc i.re i.im
       ) in
     Format.sprintf "%s)" res
   | Tuple(e1, e2) ->
@@ -117,16 +118,16 @@ let rec psi_string_of_expr (name: string) (e:expr) : string =
   | True -> Format.sprintf "%s = true;" name
   | False -> Format.sprintf "%s = false;" name
   | Ident(s) -> s
-  | Flip(f) ->
-     Format.sprintf "%s = flip(%f);" name f
+  | Flip(f1, f2) ->
+     Format.sprintf "%s = flip(%f+%fi %f+%fi);" name f1.re f1.im f2.re f2.im
   | Ite(g, t, e) -> Format.sprintf "if (%s) { %s } else { %s }" (psi_string_of_expr name g)
                       (psi_string_of_expr name t) (psi_string_of_expr name e)
   | Category(l) ->
     let res = List.foldi l ~init:(Format.sprintf "%s = categorical([" name) ~f:(fun idx acc i ->
         if idx = 0 then
-          Format.sprintf "%s%f" acc i
+          Format.sprintf "%s%f+%fi" acc i.re i.im
         else
-          Format.sprintf "%s,%f" acc i
+          Format.sprintf "%s,%f+%fi" acc i.re i.im
       ) in
     Format.sprintf "%s]);" res
   | Tuple(e1, e2) ->
@@ -152,7 +153,7 @@ let rec flatten_lst l =
     )
 
 
-let print_psi fname =
+(* let print_psi fname =
   let f = open_in fname in
   Format.printf "def main(){";
   let network = Bn.load_bif f in
@@ -168,7 +169,7 @@ let print_psi fname =
     ) in
   (* print tuple of results *)
   Format.printf "return %s;\n}\n" (sym_string_of_expr tuple);
-  ()
+  () *)
 
 let print_sym fname =
   let f = open_in fname in
@@ -192,6 +193,6 @@ let () =
   let ftype = Array.get Sys.argv 1 in
   let fname = Array.get Sys.argv 2 in
   match ftype with
-    "psi" -> print_psi fname
-  | "sym" -> print_sym fname
+    (* "psi" -> print_psi fname *)
+    "sym" -> print_sym fname
   | _ -> failwith "uncrecognized arg type"

@@ -8,7 +8,7 @@ let parse_error s =
   print_string "Parse error: ";
   print_endline s;
   let pos = Parsing.symbol_end_pos () in
-  printf "Line %d, offset %d\n" pos.pos_lnum 
+  printf "Line %d, offset %d\n" pos.pos_lnum
     (pos.pos_cnum - pos.pos_bol);
   flush stdout
 ;;
@@ -74,7 +74,7 @@ varbody:
 
 atype:
   Ttype Tident Tlbracket Tident Trbracket valnames {
-    if $2.s <> "discrete" then 
+    if $2.s <> "discrete" then
       (parse_error "Only discrete variable types are supported" ; [])
     else begin
       if not $4.is_int then
@@ -96,7 +96,7 @@ probability:
 | Tprobability probheader Tlbrace probbody Trbrace Tsemicolon {($2,$4)}
 ;
 
-probheader: 
+probheader:
   Tlparen Tident Tbar identlist Trparen {($2.s,$4)}
 | Tlparen Tident Trparen {($2.s,[])}
 ;
@@ -108,7 +108,7 @@ probbody:
 | property          {[]}
 ;
 
-probline: 
+probline:
   Tlparen identlist Trparen floatlist Tsemicolon {($2,$4)}
 | Ttable floatlist Tsemicolon {([],$2)}
 ;
@@ -120,20 +120,24 @@ identlist:
 
 floatlist:
   Tident Tcomma floatlist {
-    if $1.is_float then 
-      $1.f :: $3
-    else if $1.is_int then 
-      (float_of_int $1.i) :: $3
+    if $1.is_complex then
+      $1.c :: $3
+    else if $1.is_float then
+      {re=$1.f;im=0.0} :: $3
+    else if $1.is_int then
+      {re=float_of_int $1.i;im=0.0} :: $3
     else
-      (parse_error "List element is not numeric" ; 0.0 :: $3)
+      (parse_error "List element is not numeric" ; Complex.zero :: $3)
   }
 | Tident {
-    if $1.is_float then 
-      [$1.f]
-    else if $1.is_int then 
-      [(float_of_int $1.i)]
+    if $1.is_complex then
+      [$1.c]
+    else if $1.is_float then
+      [{re=$1.f;im=0.0}]
+    else if $1.is_int then
+      [{re=float_of_int $1.i;im=0.0}]
     else
-      (parse_error "List element is not numeric" ; [0.0])
+      (parse_error "List element is not numeric" ; [Complex.zero])
   }
 ;
 

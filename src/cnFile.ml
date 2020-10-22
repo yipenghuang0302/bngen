@@ -36,7 +36,7 @@ open BnType
  * Read a file in CN format
  *)
 
-let of_parse (schema, (acyclic, varfactors)) = 
+(* let of_parse (schema, (acyclic, varfactors)) =
 
   let numvars = Array.length schema in
   let bn = create_empty_network schema in
@@ -58,10 +58,10 @@ let of_parse (schema, (acyclic, varfactors)) =
   List.iter build_dist varfactors;
   let children = make_children parents in
   let topo_vars = make_topo_vars bn.vars parents children in
-  
+
   (* Put it all together in the final BN *)
-  {bn with acyclic=acyclic; dists=dists; topo_vars=topo_vars; 
-   parents=parents; children=children}
+  {bn with acyclic=acyclic; dists=dists; topo_vars=topo_vars;
+   parents=parents; children=children} *)
 
 
 let parse channel =
@@ -70,14 +70,14 @@ let parse channel =
   (schema, CnParser.cn CnLexer.lexer lexbuf)
 
 
-let load channel = of_parse (parse channel)
+(* let load channel = of_parse (parse channel) *)
 
 
 (*
  * Print a file in CN format
  *)
 
-let output out cn =
+(* let output out cn =
   Data.output_schema out (BnType.schema cn);
   if cn.acyclic then
     output_string out "BN {\n"
@@ -89,4 +89,4 @@ let output out cn =
     List.iter (Mn.Factor.output_factor out) fl;
     fprintf out "}\n";
   done;
-  output_string out "}\n"
+  output_string out "}\n" *)

@@ -47,12 +47,13 @@ struct
   let remove_fast x l = rec_remove_fast x [] l
 
   let sum l  = fold_left ( +  ) 0   l
-  
-  (** Computes the sum of a float list *) 
+
+  (** Computes the sum of a float list *)
   let sumf l = fold_left ( +. ) 0.0 l
 
   let sum_map f l  = fold_left (fun accu x -> f x +  accu) 0   l
   let sumf_map f l = fold_left (fun accu x -> f x +. accu) 0.0 l
+  let sumc_map f l = fold_left (fun accu x -> Complex.add (f x) accu) Complex.zero l
 
   let rec rec_count f accu = function
     | [] -> accu
@@ -73,7 +74,7 @@ struct
   (*
     let rec rec_mapi f i = function
     | [] -> []
-    | x :: l -> (f i x) :: rec_mapi f (i+1) l 
+    | x :: l -> (f i x) :: rec_mapi f (i+1) l
    *)
   (*implementated in 4.0 *)
   (*
@@ -88,7 +89,7 @@ struct
     (* Note: not tail recursive! *)
   let rec map3 f l1 l2 l3 =
     match (l1, l2, l3) with
-      ([], [], []) -> [] 
+      ([], [], []) -> []
     | (a1::l1, a2::l2, a3::l3) -> (f a1 a2 a3) :: (map3 f l1 l2 l3)
     | (_, _, _) -> invalid_arg "List.map3"
 
@@ -102,22 +103,22 @@ struct
     try map hd l :: transpose (map tl l) with _ -> []
 
 
-  let rem_first l = 
-      match l with            
+  let rem_first l =
+      match l with
         | [] -> []
-    | h::t -> t 
+    | h::t -> t
 
-  let rem_item l item = 
+  let rem_item l item =
     let newl = ref [] in
     let la = Array.of_list l in
-    for i = (List.length l) - 1 downto 0 do 
+    for i = (List.length l) - 1 downto 0 do
     if la.(i) <> item then newl := la.(i)::!newl
     done;
     !newl
 
 
   let rec rev_range x =
-    if x < 0 then [] 
+    if x < 0 then []
     else x :: rev_range (x-1)
 
   let range n = List.rev (rev_range (n-1))
@@ -128,37 +129,37 @@ module Array =
 struct
   include Array
 
-  let sum a  = 
+  let sum a  =
     let total = ref 0 in
     for i = 0 to Array.length a - 1 do
       total := !total + a.(i)
     done; !total
 
-  let sumf a = 
+  let sumf a =
     let total = ref 0.0 in
     for i = 0 to Array.length a - 1 do
       total := !total +. a.(i)
     done; !total
 
-  let sum_map f a = 
+  let sum_map f a =
     let total = ref 0 in
     for i = 0 to Array.length a - 1 do
       total := !total + f a.(i)
     done; !total
 
-  let sumf_map f a = 
+  let sumf_map f a =
     let total = ref 0.0 in
     for i = 0 to Array.length a - 1 do
       total := !total +. f a.(i)
     done; !total
 
-  let find f a = 
+  let find f a =
     let rec recfind offset =
-      if offset >= Array.length a then 
+      if offset >= Array.length a then
         raise Not_found
-      else if f a.(offset) then 
-        a.(offset) 
-      else 
+      else if f a.(offset) then
+        a.(offset)
+      else
         recfind (offset+1) in
     recfind 0
 
@@ -178,12 +179,12 @@ struct
   exception Found
 
   let exists f a =
-    try 
+    try
       for i = 0 to length a - 1 do
         if f (unsafe_get a i) then raise Found
       done ; false
     with Found -> true
- 
+
   let for_all f a =
     try
       for i = 0 to length a - 1 do
@@ -232,7 +233,7 @@ struct
   let rev_inplace a =
     let l = Array.length a in
     for i = 0 to (l - 1)/2 do
-      let j = l - 1 - i in 
+      let j = l - 1 - i in
       let tmp = a.(j) in
       a.(j) <- a.(i);
       a.(i) <- tmp
@@ -252,15 +253,15 @@ struct
   let rec flattenl_helper result offset = function
   | [] -> result
   | a :: l ->
-    for i = 0 to Array.length a - 1 do 
+    for i = 0 to Array.length a - 1 do
       result.(offset + i) <- a.(i)
     done;
     flattenl_helper result (offset + Array.length a) l
 
   let rec copy_list result offset = function
   | [] -> offset
-  | x :: l -> 
-    result.(offset) <- x; 
+  | x :: l ->
+    result.(offset) <- x;
     copy_list result (offset+1) l
 
   let flattenl la =
@@ -275,7 +276,7 @@ struct
       done;
       a
 
-  let flatten a = 
+  let flatten a =
     let dimx = Array.length a in
     let dimy = Array.length a.(0) in
     let newA = Array.make (dimx * dimy) a.(0).(0) in
@@ -294,11 +295,11 @@ struct
       done
     done;
     newA
-     
+
 
   let filter f a =
     let y = ref [] in
-    for i = Array.length a - 1 downto 0 do 
+    for i = Array.length a - 1 downto 0 do
       if f a.(i) then
         y := a.(i) :: !y
     done;
@@ -306,7 +307,7 @@ struct
 
   let partition f a =
     let y = ref [] and n = ref [] in
-    for i = Array.length a - 1 downto 0 do 
+    for i = Array.length a - 1 downto 0 do
       if f a.(i) then
         y := a.(i) :: !y
       else
@@ -318,11 +319,11 @@ struct
     let a' = Array.copy a in
     rev_inplace a'; a'
 
-  let trans a = 
+  let trans a =
     let m = Array.length a in
     let n = Array.length a.(0) in
-      for i = 1 to m-1 do 
-      if Array.length a.(i) <> n then raise Error 
+      for i = 1 to m-1 do
+      if Array.length a.(i) <> n then raise Error
     done;
       Array.init n (fun i -> Array.init m (fun j -> a.(j).(i)))
 
@@ -333,7 +334,7 @@ struct
       newAr.(i) <- a.(indexes.(i))
     done;
     newAr
-  
+
   let takeCol matrix indexes =
     let matrix' = trans matrix in
     let augemented = Array.mapi (fun i row->(row, i)) matrix' in
@@ -349,7 +350,7 @@ struct
     reg
 
 
-  let range n = 
+  let range n =
     let ar = Array.make n 0 in
     for i = 0 to n - 1 do
       ar.(i) <- i
@@ -360,7 +361,7 @@ struct
   let subtract a b =
     let y = ref [] in
     for i = (Array.length a) downto 0 do
-      if (Array.find (fun x-> x == a.(i)) b ) then 
+      if (Array.find (fun x-> x == a.(i)) b ) then
         ignore()
       else
         y := a.(i) :: !y
@@ -368,7 +369,7 @@ struct
     Array.of_list !y
 *)
   let augment a =
-    Array.mapi ( fun i x-> (x,i) ) a  
+    Array.mapi ( fun i x-> (x,i) ) a
 
 
 
@@ -421,7 +422,7 @@ module String =
 struct
   include String
   let rec match_beg s1 s2 i =
-    if i <= 0 then 
+    if i <= 0 then
       true
     else if String.get s1 i != String.get s2 i then
       false
@@ -458,7 +459,7 @@ end
 
 
 (* Utility methods *)
-    
+
 let compose f g x = f(g(x))
 let ($) f g x = f (g x)
 
@@ -474,31 +475,32 @@ let absf f = if f >= 0.0 then f else -.f
 
 (* Useful constants *)
 let log_zero = neg_infinity
+let log_zero_c:Complex.t = {re=neg_infinity;im=0.0}
 let log_one = 0.0
 
 exception EmptyList
 
-let rec dotprod_bias a b bias = 
+let rec dotprod_bias a b bias =
  (match a, b with
     ah :: at, bh :: bt -> (ah *. bh) +. dotprod_bias at bt bias
   | [], _ -> bias
   | _ -> raise EmptyList)
 
 
-let rec dotprod a b = 
+let rec dotprod a b =
  (match a, b with
     ah :: at, bh :: bt -> (ah *. bh) +. dotprod at bt
   | [], [] -> 0.0
   | _ -> raise EmptyList)
 
-let adotprod a b = 
+let adotprod a b =
   let total = ref 0.0 in
   for i = 0 to Array.length a - 1 do
     total := !total +. a.(i) *. b.(i)
   done ;
   !total
 
-let adotprod_bias a b bias = 
+let adotprod_bias a b bias =
   let total = ref bias in
   for i = 0 to Array.length a - 1 do
     total := !total +. a.(i) *. b.(i)
@@ -506,7 +508,7 @@ let adotprod_bias a b bias =
   !total
 
 
-let adotprod_autobias a b = 
+let adotprod_autobias a b =
   let len = Array.length a in
   let total = ref b.(len) in
   for i = 0 to len - 1 do
@@ -516,6 +518,8 @@ let adotprod_autobias a b =
 
 let maxf (a : float) (b : float) =
   if a > b then a else b
+let maxc (a : Complex.t) (b : Complex.t) =
+  if Complex.norm a > Complex.norm b then a else b
 
 let minf (a : float) (b : float) =
   if a < b then a else b
@@ -523,6 +527,9 @@ let minf (a : float) (b : float) =
 let fast_exp x =
   if x > (-37.0) then exp x
   else 0.0
+
+let fast_exp_c x =
+  Complex.exp x
 
 let logsumexp lv =
   match lv with x::[] -> x | [] -> log_zero | x::l ->
@@ -550,14 +557,14 @@ let logsumexp2 a b =
 
 let alogsumexp lv =
   if Array.length lv = 1 then lv.(0) else
-  let base = Array.fold_left maxf log_zero lv in
-  if base = log_zero then log_zero 
+  let base = Array.fold_left maxc log_zero_c lv in
+  if base = log_zero_c then log_zero_c
   else begin
-    let total = ref (fast_exp(lv.(0) -. base)) in
+    let total = ref (fast_exp_c(Complex.sub lv.(0) base)) in
     for i = 1 to Array.length lv - 1 do
-      total := !total +. fast_exp(lv.(i) -. base)
+      total := Complex.add !total (fast_exp_c(Complex.sub lv.(i) base))
     done;
-    base +. log(!total)
+    Complex.add base (Complex.log(!total))
   end
 
 let output_int channel i = output_string channel (string_of_int i)
@@ -571,9 +578,9 @@ let output_sep channel sep a =
   done
 
 (*
-let print_objsize x = 
+let print_objsize x =
   let t = Objsize.objsize x in
-  Printf.printf "Data: %d;  Headers: %d;  Depth: %d\n" 
+  Printf.printf "Data: %d;  Headers: %d;  Depth: %d\n"
     t.Objsize.data t.Objsize.headers t.Objsize.depth ;
   Printf.printf "Bytes with headers: %d\n" (Objsize.size_with_headers t) ;
   Printf.printf "Bytes without headers: %d\n" (Objsize.size_without_headers t)
@@ -614,7 +621,7 @@ let log_stream name =
 
 (* Output a string to the specified log, if defined *)
 let log_string name s =
-  if Hashtbl.mem log_hash name then 
+  if Hashtbl.mem log_hash name then
     output_string (Hashtbl.find log_hash name) s
 
 (* Print to a log with printf-style formatting *)
@@ -641,14 +648,14 @@ let dlogfz4 fmt arg1 arg2 arg3 arg4 = if log_exists log_debug then logf log_debu
 
 
 let log_args () =
-  (* Convert the first argument from: "...path.../_libra_<command>" 
+  (* Convert the first argument from: "...path.../_libra_<command>"
      to: "...path.../libra command". *)
   let cmd = Sys.argv.(0) in
-  if String.contains cmd '_' 
+  if String.contains cmd '_'
       && String.rindex cmd '_' + 1 >= String.length "_libra_" then begin
     let i = String.rindex cmd '_' in
     let prelibra = String.sub cmd 0 (i+1 - String.length "_libra_") in
-    let postlibra = String.sub cmd (i+1) (String.length cmd - (i+1)) in 
+    let postlibra = String.sub cmd (i+1) (String.length cmd - (i+1)) in
     Sys.argv.(0) <- String.concat "" [prelibra; "libra "; postlibra]
   end;
   let argstr = String.concat " " (Array.to_list Sys.argv) in
@@ -657,7 +664,7 @@ let log_args () =
 let common_log_init () =
   let debugging = !__debugging in
   let verbose = !__verbose || !__debugging in
-  let logout = 
+  let logout =
     if !__logfile = "" then stdout else open_out !__logfile in
   register_log log_normal logout;
   if verbose then register_log log_verbose logout;
@@ -690,21 +697,21 @@ let normalize_inplace_raw a =
 let normalize_inplace_log a =
   let logz = alogsumexp a in
   for i = 0 to Array.length a - 1 do
-    a.(i) <- a.(i) -. logz
+    a.(i) <- Complex.sub a.(i) logz
   done
 
 
 let normalizelog a =
   let logsum = alogsumexp a in (*Array.sumf (Array.map (exp) a) in *)
-  let n_a = Array.map (fun x->  x  -. logsum) a in
+  let n_a = Array.map (fun x->  Complex.sub x logsum) a in
   n_a
 
-let normalize_raw a = 
+let normalize_raw a =
   let a = Array.copy a in
   normalize_inplace_raw a;
   a
 
-let normalize_log a = 
+let normalize_log a =
   let a = Array.copy a in
   normalize_inplace_log a;
   a
@@ -721,23 +728,23 @@ let stats_wadd (sum, sumsq, n) w x =
 
 let stats_add s x = stats_wadd s 1. x
 
-let stats_n (sum, sumsq, n) = 
+let stats_n (sum, sumsq, n) =
   !n
 
-let stats_sum (sum, sumsq, n) = 
+let stats_sum (sum, sumsq, n) =
   !sum
 
-let stats_mean (sum, sumsq, n) = 
+let stats_mean (sum, sumsq, n) =
   if !n = 0. then 0.
   else !sum /. !n
 
-let stats_var (sum, sumsq, n) = 
+let stats_var (sum, sumsq, n) =
   if !n = 0. then 0.
   else (!sumsq -. !sum *. !sum /. !n) /. !n
 
 let stats_epsilon = 1.0e-10
 
-let stats_stddev s = 
+let stats_stddev s =
   let v = stats_var s in
   if v < 0.0 && v > -.stats_epsilon then
     0.0

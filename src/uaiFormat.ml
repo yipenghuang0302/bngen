@@ -56,7 +56,7 @@ failwith "ono"
 
 let input_buf = String.create 1024
 
-let input_int ic = 
+let input_int ic =
   int_of_string (input_token ic input_buf 1024)
 
 let input_float ic =
@@ -65,10 +65,10 @@ let input_float ic =
 let input_word ic =
   input_token ic input_buf 1024
 
-let input ic =
+(* let input ic =
   (* Read in "Markov" or "Bayes" *)
   let w = String.uppercase (input_word ic) in
-  if String.compare "MARKOV" w <> 0 
+  if String.compare "MARKOV" w <> 0
     && String.compare "BAYES" w <> 0 then begin
     (* TODO: Friendlier notification of errors... *)
     print_string "ERROR: UAI file does not start with MARKOV or BAYES.\n";
@@ -77,7 +77,7 @@ let input ic =
   end;
 
   (* Read schema *)
-  let num_vars = input_int ic in 
+  let num_vars = input_int ic in
   let schema = Array.init num_vars (fun i -> input_int ic) in
 
   (* Read factor scopes *)
@@ -94,13 +94,13 @@ let input ic =
   let factor_values = Array.init num_factors (fun i -> read_factor i) in
 
   (* Build factors (tables only) *)
-  let range i = schema.(i) in 
+  let range i = schema.(i) in
   let build_table scope values =
     Factor.Table (scope, (Array.map range scope), values) in
   let factors = Array.map2 build_table scopes factor_values in
-  (schema, factors)
+  (schema, factors) *)
 
-let output o schema factors =
+(* let output o schema factors =
   output_string o "MARKOV\n";
   fprintf o "%d\n" (Array.length schema);
   fprintf o "%s\n" (string_of_iarray schema);
@@ -109,7 +109,7 @@ let output o schema factors =
   | Factor.Table (vars, ranges, values) ->
     fprintf o "%d %s\n" (Array.length vars) (string_of_iarray vars)
   | Factor.Const w ->
-    fprintf o "0\n" 
+    fprintf o "0\n"
   | _ ->
     print_string "ERROR: only table factors are supported.\n";
     flush stdout;
@@ -123,4 +123,4 @@ let output o schema factors =
   | Factor.Const w ->
     fprintf o "\n1 %f\n" (exp w)
   | _ -> assert false in
-  Array.iter print_values factors
+  Array.iter print_values factors *)

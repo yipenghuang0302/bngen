@@ -28,13 +28,15 @@
 (* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *)
 (******************************************************************************)
 
-type bifNumStr = {s:string; is_float:bool; f:float; is_int:bool; i:int}
+type bifNumStr = {s:string; is_complex:bool; c:Complex.t; is_float:bool; f:float; is_int:bool; i:int}
 type bifVariable = string * (string list)
-type bifProbability = (string * string list) * (string list * float list) list 
+type bifProbability = (string * string list) * (string list * Complex.t list) list
 type bif = string * (bifVariable list) * (bifProbability list)
 
-let s_ident str = {s=str; is_float=false; f=0.0; is_int=false; i=0}
-let f_ident str = {s=str; is_float=true; f=float_of_string str; 
+let s_ident str = {s=str; is_complex=false; c=Complex.zero; is_float=false; f=0.0; is_int=false; i=0}
+let c_ident str = {s=str; is_complex=true; c={re=float_of_string (List.hd (String.split_on_char '+' str));im=float_of_string (List.hd (String.split_on_char 'i' (List.hd (List.rev (String.split_on_char '+' str)))))}; is_float=false; f=0.0;
                    is_int=false; i=0}
-let i_ident str = {s=str; is_float=true; f=float_of_string str; 
+let f_ident str = {s=str; is_complex=true; c={re=float_of_string str;im=0.0}; is_float=true; f=float_of_string str;
+                   is_int=false; i=0}
+let i_ident str = {s=str; is_complex=true; c={re=float_of_string str;im=0.0}; is_float=true; f=float_of_string str;
                    is_int=true; i=int_of_string str}
