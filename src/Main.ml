@@ -88,6 +88,7 @@ let rec sym_string_of_expr (e:expr) : string =
   | False -> "false"
   | Ident(s) -> s
   | Flip(f1, f2) ->
+    (* Format.sprintf "flip %f %f" f1.re f2.re *)
     Format.sprintf "flip %f+%fi %f+%fi" f1.re f1.im f2.re f2.im
   | Not(Ident(s)) -> Format.sprintf "! (%s)" s
   | And(e1, e2) -> Format.sprintf "(%s && %s)" (sym_string_of_expr e1) (sym_string_of_expr e2)
