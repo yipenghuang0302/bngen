@@ -1,0 +1,24 @@
+network unknown {}
+
+variable n0000q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0000 ) {
+  table 0, 1;
+}
+
+variable n0001q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0000 | n0000q0000 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0002q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0000 | n0001q0000 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, -1.00000000+0.00000000i;
+}

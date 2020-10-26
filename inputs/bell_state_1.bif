@@ -1,0 +1,50 @@
+network unknown {}
+
+variable n0000q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0000 ) {
+  table 1, 0;
+}
+
+variable n0000q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0001 ) {
+  table 1, 0;
+}
+
+variable n0001q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0000 | n0000q0000 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0002q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0001 | n0000q0001 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0003q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0003q0001 | n0001q0000, n0002q0001 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0004q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0004q0001 | n0003q0001 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+

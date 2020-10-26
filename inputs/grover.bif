@@ -1,0 +1,487 @@
+network unknown {}
+
+variable n0000q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0000 ) {
+  table 1, 0;
+}
+
+variable n0000q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0001 ) {
+  table 1, 0;
+}
+
+variable n0000q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0002 ) {
+  table 1, 0;
+}
+
+variable n0000q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0000q0003 ) {
+  table 1, 0;
+}
+
+variable n0001q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0003 | n0000q0003 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0001q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0000 | n0000q0000 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0001q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0001 | n0000q0001 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0001q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0001q0002 | n0000q0002 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0002q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0003 | n0001q0003 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0002q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0001 | n0001q0001 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+0.70710678i;
+}
+
+variable n0002q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0000 | n0001q0000 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+0.70710678i;
+}
+
+variable n0002q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0002q0002 | n0001q0002 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0003q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0003q0003 | n0002q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0003q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0003q0000 | n0002q0000 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0003q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0003q0002 | n0002q0002 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0004q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0004q0003 | n0003q0003 ) {
+  (ZERO) 0.00000000+0.00000000i, 0.70710678+-0.70710678i;
+  (ONE ) 0.70710678+-0.70710678i, 0.00000000+0.00000000i;
+}
+
+variable n0004q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0004q0000 | n0002q0001, n0003q0000 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0004q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0004q0002 | n0003q0002 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0005q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0005q0003 | n0004q0003 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+0.70710678i;
+}
+
+variable n0005q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0005q0000 | n0004q0000 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0005q0002 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0005q0002 | n0004q0002 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0006q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0006q0003 | n0005q0003 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0007q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0007q0003 | n0005q0000, n0006q0003 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0008q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0008q0003 | n0007q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0008q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0008q0000 | n0005q0000 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+-0.70710678i;
+}
+
+variable n0009q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0009q0003 | n0008q0003 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+0.70710678i;
+}
+
+variable n0009q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0009q0000 | n0008q0000 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0010q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0010q0000 | n0002q0001, n0009q0000 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0010q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0010q0003 | n0009q0003 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0011q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0011q0000 | n0010q0000 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0012q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0012q0003 | n0011q0000, n0010q0003 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0013q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0013q0003 | n0012q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0013q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0013q0000 | n0011q0000 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0014q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0014q0003 | n0013q0003 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+-0.70710678i;
+}
+
+variable n0014q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0014q0000 | n0002q0001, n0013q0000 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0015q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0015q0000 | n0014q0000 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0015q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0015q0003 | n0014q0003 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0016q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0016q0003 | n0015q0000, n0015q0003 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0017q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0017q0003 | n0016q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0017q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0017q0000 | n0015q0000 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0018q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0018q0003 | n0017q0003 ) {
+  (ZERO) 1, 0;
+  (ONE ) 0, 0.70710678+-0.70710678i;
+}
+
+variable n0018q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0018q0000 | n0002q0001, n0017q0000 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0019q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0019q0000 | n0018q0000 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0019q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0019q0003 | n0018q0003 ) {
+  (ZERO) 0.50000000+-0.50000000i, -0.50000000+0.50000000i;
+  (ONE ) 0.50000000+-0.50000000i, 0.50000000+-0.50000000i;
+}
+
+variable n0019q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0019q0001 | n0002q0001 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0020q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0020q0003 | n0019q0000, n0019q0003 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 1, 0;
+  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+}
+
+variable n0020q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0020q0001 | n0019q0001 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0021q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0021q0003 | n0020q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0021q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0021q0000 | n0019q0000 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0021q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0021q0001 | n0020q0001 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0022q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0022q0003 | n0021q0003 ) {
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0022q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0022q0000 | n0021q0000 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0023q0003 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0023q0003 | n0022q0003 ) {
+  (ZERO) 0.00000000+0.00000000i, 0.70710678+-0.70710678i;
+  (ONE ) 0.70710678+-0.70710678i, 0.00000000+0.00000000i;
+}
+
+variable n0023q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0023q0001 | n0022q0000, n0021q0001 ) {
+  (ZERO,ZERO) 1, 0;
+  (ZERO,ONE ) 0, 1;
+  (ONE ,ZERO) 0, 1;
+  (ONE ,ONE ) 1, 0;
+}
+
+variable n0024q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0024q0001 | n0023q0001 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0024q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0024q0000 | n0022q0000 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0025q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0025q0001 | n0024q0001 ) {
+  (ZERO) 0, 1;
+  (ONE ) 1, 0;
+}
+
+variable n0025q0000 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0025q0000 | n0024q0000 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
+
+variable n0026q0001 {
+  type discrete [ 2 ] { ZERO, ONE };
+}
+probability ( n0026q0001 | n0025q0001 ) {
+  (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
+  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+}
