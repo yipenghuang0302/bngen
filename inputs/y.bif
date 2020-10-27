@@ -15,19 +15,3 @@ probability ( n0001q0000 | n0000q0000 ) {
   (ZERO) 0.00000000+1.00000000i, 0;
 }
 
-variable n0002q0000 {
-  type discrete [ 2 ] { ONE, ZERO };
-}
-probability ( n0002q0000 | n0001q0000 ) {
-  (ONE ) 0, 1;
-  (ZERO) 1, 0;
-}
-
-variable n0003q0000 {
-  type discrete [ 2 ] { ONE, ZERO };
-}
-probability ( n0003q0000 | n0002q0000 ) {
-  (ONE ) -1.00000000+0.00000000i, 0;
-  (ZERO) 0, 1;
-}
-

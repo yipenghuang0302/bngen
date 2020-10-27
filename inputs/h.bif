@@ -1,16 +1,16 @@
 network unknown {}
 
 variable n0000q0000 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0000q0000 ) {
-  table 0.70710678+0.00000000i, -0.70710678+0.00000000i;
+  table -0.70710678+0.00000000i, 0.70710678+0.00000000i;
 }
 
 variable n0001q0000 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0001q0000 | n0000q0000 ) {
+  (ONE ) -0.70710678+0.00000000i, 0.70710678+0.00000000i;
   (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
-  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
 }

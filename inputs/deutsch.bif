@@ -1,57 +1,75 @@
 network unknown {}
 
 variable n0000q0000 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0000q0000 ) {
-  table 1, 0;
+  table 0, 1;
 }
 
 variable n0000q0001 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0000q0001 ) {
-  table 1, 0;
+  table 0, 1;
 }
 
 variable n0001q0001 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0001q0001 | n0000q0001 ) {
-  (ZERO) 0, -0.70710678+0.70710678i;
-  (ONE ) 0.70710678+-0.70710678i, 0;
+  (ONE ) 0, 0.70710678+-0.70710678i;
+  (ZERO) -0.70710678+0.70710678i, 0;
 }
 
 variable n0001q0000 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0001q0000 | n0000q0000 ) {
+  (ONE ) -0.70710678+0.00000000i, 0.70710678+0.00000000i;
   (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
-  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
 }
 
 variable n0002q0001 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0002q0001 | n0001q0000, n0001q0001 ) {
-  (ZERO,ZERO) 1, 0;
-  (ZERO,ONE ) 0, 1;
-  (ONE ,ZERO) 1, 0;
-  (ONE ,ONE ) 0, -1.00000000+0.00000000i;
+  (ONE ,ONE ) -1.00000000+0.00000000i, 0;
+  (ONE ,ZERO) 0, 1;
+  (ZERO,ONE ) 1, 0;
+  (ZERO,ZERO) 0, 1;
 }
 
 variable n0003q0001 {
-  type discrete [ 2 ] { ZERO, ONE };
+  type discrete [ 2 ] { ONE, ZERO };
 }
 probability ( n0003q0001 | n0002q0001 ) {
-  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
-  (ONE ) -0.50000000+-0.50000000i, 0.50000000+0.50000000i;
+  (ONE ) -1.00000000+0.00000000i, 0;
+  (ZERO) 0, 1;
 }
 
-variable n0003q0000 {
-  type discrete [ 2 ] { ZERO, ONE };
+variable n0004q0001 {
+  type discrete [ 2 ] { ONE, ZERO };
 }
-probability ( n0003q0000 | n0001q0000 ) {
+probability ( n0004q0001 | n0001q0000, n0003q0001 ) {
+  (ONE ,ONE ) -1.00000000+0.00000000i, 0;
+  (ONE ,ZERO) 0, 1;
+  (ZERO,ONE ) 1, 0;
+  (ZERO,ZERO) 0, 1;
+}
+
+variable n0005q0001 {
+  type discrete [ 2 ] { ONE, ZERO };
+}
+probability ( n0005q0001 | n0004q0001 ) {
+  (ONE ) 0.50000000+0.50000000i, -0.50000000+-0.50000000i;
+  (ZERO) 0.50000000+0.50000000i, 0.50000000+0.50000000i;
+}
+
+variable n0005q0000 {
+  type discrete [ 2 ] { ONE, ZERO };
+}
+probability ( n0005q0000 | n0001q0000 ) {
+  (ONE ) -0.70710678+0.00000000i, 0.70710678+0.00000000i;
   (ZERO) 0.70710678+0.00000000i, 0.70710678+0.00000000i;
-  (ONE ) 0.70710678+0.00000000i, -0.70710678+0.00000000i;
 }
